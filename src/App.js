@@ -1,5 +1,6 @@
 import './App.css';
-import MainPage from "./components/MainPage";
+import MainPage from "./components/bonuses/mainPage/MainPage";
+import Bonuses from "./components/bonuses/Bonuses";
 import {TASK_TEST_LIST} from "./constants";
 import {useEffect, useState} from "react";
 
@@ -19,10 +20,11 @@ const App = () => {
         setTasks(TASK_TEST_LIST)
     }, [])
 
-
     return (
         <div className="App">
-            <MainPage tasks={tasks}/>
+            <MainPage tasks={tasks} setTasks={{setTasks}}/>
+            {/*{<Route path="/" element={MainPage/>}>*/}
+            <Bonuses/>
         </div>
     );
 }
