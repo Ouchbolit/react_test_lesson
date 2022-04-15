@@ -1,0 +1,27 @@
+.mainPageWrapper {
+    height: 100vh;
+    padding: 1%;
+}
+
+.taskCard {
+    background-image: linear-gradient(dodgerblue , yellow);
+    line-height: 1.5;
+    font-size: 20px;
+    border-radius: 25px;
+    padding: 15px;
+    border-style: solid;
+    border-color: blue;
+    font-family: Serif;
+    margin: 1em auto;
+    width: 20%;
+}
+
+.buttons {
+    box-sizing: border-box;
+    padding: 10px;
+    margin: 10px 0;
+}
+.border-bottom-input {
+    border: 0;
+    border-bottom: 1px solid #eee;
+}
