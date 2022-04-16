@@ -4,34 +4,55 @@ import TaskCard from "./TaskCard";
 import {TaskState} from "./store/tasks";
 import {apiGateway} from "../API/api";
 import moment from "moment";
+import {observer} from "mobx-react-lite";
 
-const MainPage = () => {
+const MainPage = observer (() => {
 
-        const [taskTitle, setTaskTitle] = useState()
-        const [taskDescription, setTaskDescription] = useState()
+        const [title, setTitle] = useState('')
+        const [description, setDescription] = useState('')
 
         const handleChangeTitle = (e) =>{
-            setTaskTitle(e.target.value)
+            e.preventDefault()
+            setTitle(e.target.value)
         }
 
         const handleChangeDescription = (e) =>{
-            setTaskDescription(e.target.value)
+            e.preventDefault()
+            setDescription(e.target.value)
         }
 
-        const handleSubmitNewTask = async () => {
-            const res = await apiGateway.tasks.createTask({
-                    title: taskTitle,
-                    description: taskDescription,
-                    deadline: moment()
-                })
-            if(res.status !== 200) {
-                console.log('Something went wrong')
-                console.log(res)
-                return null
-            }
-            const allTasksRes = await apiGateway.tasks.getTasks()
-            TaskState.setTasks(allTasksRes.data)
+    const deleteTask = async (task) => {
+        const res = await apiGateway.tasks.deleteTasks({id: task.id})
+        if (res.status !== 200) {
+            console.log('Something wrong')
+            console.log(res)
+            return null
         }
+        const allTasksRes = await apiGateway.tasks.getTasks()
+        TaskState.setTasks(allTasksRes.data)
+    }
+
+    const editTask = async (task, value) => {
+        const res = await apiGateway.tasks.editTask({id: task.id, title: value.title, description: value.description, deadline: moment()})
+        if (res.status !== 200) {
+            console.log('Something wrong')
+            console.log(res)
+            return null
+        }
+        const allTasksRes = await apiGateway.tasks.getTasks()
+        TaskState.setTasks(allTasksRes.data)
+    }
+
+    const addNewTask = async () => {
+        const res = await apiGateway.tasks.createTask({title: title, description: description, deadline: moment()})
+        if (res.status !== 201) {
+            console.log('Something wrong')
+            console.log(res)
+            return null
+        }
+        const allTasksRes = await apiGateway.tasks.getTasks()
+        TaskState.setTasks(allTasksRes.data)
+    }
 
         return (
             <div className={classes.mainPageWrapper}>
@@ -39,21 +60,22 @@ const MainPage = () => {
 
                 <input
                     placeholder='Title'
-                    value={taskTitle}
+                    value={title}
                     onChange={handleChangeTitle}
                 />
 
                     <input
                         placeholder='Description'
-                        value={taskDescription}
+                        value={description}
                         onChange={handleChangeDescription}
                     />
-                    <button onClick={handleSubmitNewTask}>Create task</button>
+                    <button className={classes.buttons} onClick={addNewTask}>Create task</button>
 
                 </div>
-                {TaskState.tasks.map(task => <TaskCard task={task} key={task.id}/>)}
+                {TaskState.tasks.map(task => <TaskCard deleteTask={deleteTask} editTask={editTask} task={task} key={task.id}/>)}
             </div>
         )
     }
+)
 
 export default memo(MainPage)

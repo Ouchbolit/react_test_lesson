@@ -2,11 +2,9 @@ import React, {useRef, useState} from 'react';
 import moment from "moment";
 import {taskDeadlineOverdueDetector} from "../logic/taskDeadlineOverdueDetector";
 import classes from "./mainPage.module.css";
-import {apiGateway} from "../API/api";
 import MyModal from "./MyModal";
-import {TaskState} from "./store/tasks";
 
-const TaskCard = ({task}) => {
+const TaskCard = ({task, deleteTask, editTask}) => {
 
     const {current: isOverdue} = useRef(taskDeadlineOverdueDetector(task.deadline))
 
@@ -22,27 +20,6 @@ const TaskCard = ({task}) => {
         setValue({...value, description: e.target.value})
     }
 
-    const deleteTask = async () => {
-        const res = await apiGateway.tasks.deleteTasks({id: task.id})
-        if (res.status !== 201) {
-            console.log('Something wrong')
-            console.log(res)
-            return null
-        }
-        console.log(res)
-    }
-
-    const editTask = async () => {
-        const res = await apiGateway.tasks.editTask({id: task.id, title: value.title, description: value.description, deadline: moment()})
-        if (res.status !== 201) {
-            console.log('Something wrong')
-            console.log(res)
-            return null
-        }
-        const allTasksRes = await apiGateway.tasks.getTasks()
-        TaskState.setTasks(allTasksRes.data)
-    }
-
     return (
         <div className={classes.taskCard}>
             <div>{task.title}</div>
@@ -50,8 +27,8 @@ const TaskCard = ({task}) => {
             <div className={isOverdue ? classes.overdue : classes.commonDeadline}>
                 {moment(task.deadline).format('LLL')}
             </div>
-            <button onClick={deleteTask}>X</button>
-            <button onClick={() => setModal(true)}>pencil.png</button>
+            <button className={classes.exitButtons} onClick={() => deleteTask(task)}>X</button>
+            <button onClick={() => setModal(true)}>Edit</button>
             <MyModal visible={modal}  setVisible={setModal}>
                 <input
                     type="text"
@@ -65,7 +42,7 @@ const TaskCard = ({task}) => {
                     onChange = {handleDescriptionChange}
                     value={value.description}
                 />
-                <button onClick={editTask}>Добавить</button>
+                <button className={classes.buttons} onClick={() => editTask(value, task)}>Добавить</button>
             </MyModal>
         </div>
     );

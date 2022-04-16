@@ -4,13 +4,13 @@
 }
 
 .taskCard {
-    background-image: linear-gradient(dodgerblue , yellow);
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
     line-height: 1.5;
     font-size: 20px;
     border-radius: 25px;
     padding: 15px;
-    border-style: solid;
-    border-color: blue;
     font-family: Serif;
     margin: 1em auto;
     width: 20%;
@@ -20,8 +20,10 @@
     box-sizing: border-box;
     padding: 10px;
     margin: 10px 0;
+    font-family: monospace;
 }
-.border-bottom-input {
-    border: 0;
-    border-bottom: 1px solid #eee;
+
+.exitButtons {
+    border-radius: 3px;
+    background: #f31616;
 }
